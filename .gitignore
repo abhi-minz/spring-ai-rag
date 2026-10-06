@@ -1,0 +1,70 @@
+o
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment / secrets — CRITICAL
+.env
+.env.*
+*.secret
+application-local.properties
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Compiled
+*.class# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment / secrets — CRITICAL
+.env
+.env.*
+*.secret
+application-local.properties
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Compiled
+*.class
