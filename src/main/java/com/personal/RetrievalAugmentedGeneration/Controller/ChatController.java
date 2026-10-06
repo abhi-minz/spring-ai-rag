@@ -45,11 +45,14 @@ public class ChatController {
     }
 
     @PostMapping("ingest-document")
-    public Map<String, Object> ingestDocument(@RequestBody Map<String, String> body) {
-        String text = body.get("text");
-        String source = body.getOrDefault("source", "unknown");
+    public Map<String, Object> ingestDocument(@RequestBody Map<String, Object> body) {
+        String text = (String) body.get("text");
+        String source = (String) body.getOrDefault("source", "unknown");
 
-        List<Document> chunks = chunkingService.split(text, Map.of("source", source));
+        int chunkSize = body.containsKey("chunkSize") ? ((Number) body.get("chunkSize")).intValue() : 800;
+        int minChars = body.containsKey("minChars") ? ((Number) body.get("minChars")).intValue() : 350;
+
+        List<Document> chunks = chunkingService.split(text, Map.of("source", source), chunkSize, minChars, 0);
         List<String> ids = vectorStoreService.addAll(chunks);
 
         return Map.of("source", source, "chunks", chunks.size(), "ids", ids);
