@@ -1,6 +1,7 @@
 package com.personal.RetrievalAugmentedGeneration.Controller;
 
 import com.personal.RetrievalAugmentedGeneration.Service.ChatService;
+import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
 import com.personal.RetrievalAugmentedGeneration.Service.VectorStoreService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.ai.document.Document;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,10 +22,13 @@ public class ChatController {
 
     private final ChatService chatService;
     private final VectorStoreService vectorStoreService;
+    private final ChunkingService chunkingService;
 
-    public ChatController(ChatService chatService, VectorStoreService vectorStoreService) {
+    public ChatController(ChatService chatService, VectorStoreService vectorStoreService,
+            ChunkingService chunkingService) {
         this.chatService = chatService;
         this.vectorStoreService = vectorStoreService;
+        this.chunkingService = chunkingService;
     }
 
     @PostMapping("/ask")
@@ -37,6 +42,17 @@ public class ChatController {
         String source = body.getOrDefault("source", "manual");
         String id = vectorStoreService.add(content, Map.of("source", source));
         return "Inserted : " + id;
+    }
+
+    @PostMapping("ingest-document")
+    public Map<String, Object> ingestDocument(@RequestBody Map<String, String> body) {
+        String text = body.get("text");
+        String source = body.getOrDefault("source", "unknown");
+
+        List<Document> chunks = chunkingService.split(text, Map.of("source", source));
+        List<String> ids = vectorStoreService.addAll(chunks);
+
+        return Map.of("source", source, "chunks", chunks.size(), "ids", ids);
     }
 
     @GetMapping("search")

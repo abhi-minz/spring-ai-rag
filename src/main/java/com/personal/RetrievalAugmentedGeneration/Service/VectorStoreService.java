@@ -23,6 +23,11 @@ public class VectorStoreService {
         return doc.getId();
     }
 
+    public List<String> addAll(List<Document> documents) {
+        vectorStore.add(documents);
+        return documents.stream().map(Document::getId).toList();
+    }
+
     public List<Document> search(String query, int topK) {
         return vectorStore.similaritySearch(
                 SearchRequest.builder().query(query).topK(topK).build());
