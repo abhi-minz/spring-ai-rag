@@ -3,6 +3,7 @@ package com.personal.RetrievalAugmentedGeneration.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ public class PdfIngestionService {
         List<Document> pages = pdfReaderService.readPdf(pdfPath);
         List<Document> cleanedPages = new ArrayList<>();
 
+        String parentId = UUID.randomUUID().toString();
+
         for (Document page : pages) {
             String cleaned = textCleanupService.clean(page.getText());
             Document newPage = new Document(cleaned, page.getMetadata());
@@ -36,6 +39,11 @@ public class PdfIngestionService {
         }
 
         List<Document> chunks = chunkingService.splitWithPageMetadata(cleanedPages, source, chunkSize);
+
+        for (Document c : chunks) {
+            c.getMetadata().put("parent_document_id", parentId);
+        }
+
         List<String> ids = vectorStoreService.addAll(chunks);
 
         return Map.of("source", source, "pages", pages.size(), "chunks", chunks.size(), "ids", ids);
