@@ -5,6 +5,7 @@ import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
 import com.personal.RetrievalAugmentedGeneration.Service.DocumentIngestionService;
 import com.personal.RetrievalAugmentedGeneration.Service.PdfIngestionService;
 import com.personal.RetrievalAugmentedGeneration.Service.PdfReaderService;
+import com.personal.RetrievalAugmentedGeneration.Service.RagService;
 import com.personal.RetrievalAugmentedGeneration.Service.VectorStoreService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,16 +33,19 @@ public class ChatController {
     private final ChunkingService chunkingService;
     private final PdfReaderService pdfReaderService;
     private final PdfIngestionService pdfIngestionService;
+    private final RagService ragService;
 
     public ChatController(ChatService chatService, VectorStoreService vectorStoreService,
             ChunkingService chunkingService, PdfReaderService pdfReaderService,
-            DocumentIngestionService documentIngestionService, PdfIngestionService pdfIngestionService) {
+            DocumentIngestionService documentIngestionService, PdfIngestionService pdfIngestionService,
+            RagService ragService) {
         this.chatService = chatService;
         this.vectorStoreService = vectorStoreService;
         this.chunkingService = chunkingService;
         this.pdfReaderService = pdfReaderService;
         this.documentIngestionService = documentIngestionService;
         this.pdfIngestionService = pdfIngestionService;
+        this.ragService = ragService;
     }
 
     @PostMapping("/ask")
@@ -121,6 +125,13 @@ public class ChatController {
         } finally {
             Files.deleteIfExists(temp);
         }
+    }
+
+    @PostMapping("/ask-doc")
+    public Map<String, Object> askDoc(@RequestBody Map<String, Object> body) {
+        String question = (String) body.get("question");
+        int topK = body.containsKey("topK") ? ((Number) body.get("topK")).intValue() : 3;
+        return ragService.ask(question, topK);
     }
 
 }

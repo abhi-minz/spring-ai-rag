@@ -14,3 +14,19 @@ results are topically unrelated to the query.
 
 **Lesson:** Fixed top-k is blunt. Distance-threshold or relative-threshold
 retrieval adapts better to query strength.
+## Distance Threshold Experiment
+
+Instead of fixed top-k, filter by relative distance (best + threshold).
+
+| Threshold | Chunks kept | Pages |
+|-----------|-------------|-------|
+| best + 0.03 | 2 | 5, 4 |
+| best + 0.05 | 3 | 5, 4, 15 |
+| best + 0.10 | 5 | 5, 4, 15, 14, 13 |
+| best + 0.20 | ~8 | + 1, 7, 3 |
+
+**Trade-off:** Higher threshold = more recall, lower precision.
+**Chosen default:** best + 0.05 (returns 3 chunks — matches k=3 quality).
+
+**Lesson:** Query strength varies. Fixed top-k is blunt. Distance thresholds
+adapt to the query but require tuning.
