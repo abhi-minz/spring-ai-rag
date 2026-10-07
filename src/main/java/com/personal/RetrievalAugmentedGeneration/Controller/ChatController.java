@@ -39,6 +39,14 @@ public class ChatController {
         return chatService.chat(question);
     }
 
+    /**
+     * Inserts a single pre-chunked piece of text.
+     *
+     * Use /api/ingest-document instead if you have raw text that needs chunking.
+     * This endpoint is for testing and cases where you already know the chunk
+     * boundaries.
+     */
+
     @PostMapping("ingest")
     public String ingest(@RequestBody Map<String, String> body) {
         String content = body.get("content");
