@@ -1,12 +1,15 @@
 package com.personal.RetrievalAugmentedGeneration.Controller;
 
+import com.openai.core.MultipartField;
 import com.personal.RetrievalAugmentedGeneration.Service.ChatService;
 import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
+import com.personal.RetrievalAugmentedGeneration.Service.DocumentIngestionService;
 import com.personal.RetrievalAugmentedGeneration.Service.PdfReaderService;
 import com.personal.RetrievalAugmentedGeneration.Service.VectorStoreService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -21,17 +24,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api")
 public class ChatController {
 
+    private final DocumentIngestionService documentIngestionService;
     private final ChatService chatService;
     private final VectorStoreService vectorStoreService;
     private final ChunkingService chunkingService;
     private final PdfReaderService pdfReaderService;
 
     public ChatController(ChatService chatService, VectorStoreService vectorStoreService,
-            ChunkingService chunkingService, PdfReaderService pdfReaderService) {
+            ChunkingService chunkingService, PdfReaderService pdfReaderService,
+            DocumentIngestionService documentIngestionService) {
         this.chatService = chatService;
         this.vectorStoreService = vectorStoreService;
         this.chunkingService = chunkingService;
         this.pdfReaderService = pdfReaderService;
+        this.documentIngestionService = documentIngestionService;
     }
 
     @PostMapping("/ask")
@@ -83,6 +89,11 @@ public class ChatController {
                 "path", path, "pages", docs.size(), "firstPagePreview",
                 docs.isEmpty() ? "" : docs.get(0).getText().substring(0, Math.min(300, docs.get(0).getText().length())),
                 "firstPageMetaData", docs.isEmpty() ? Map.of() : docs.get(0).getMetadata());
+    }
+
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile file) throws Exception {
+        return documentIngestionService.ingestPdf(file);
     }
 
 }
