@@ -134,4 +134,12 @@ public class ChatController {
         return ragService.ask(question, topK);
     }
 
+    @PostMapping("/compare")
+    public Map<String, Object> compare(@RequestBody Map<String, Object> body) {
+        String question = (String) body.get("question");
+        int topK = body.containsKey("topK") ? ((Number) body.get("topK")).intValue() : 3;
+
+        return ragService.compare(question, topK);
+    }
+
 }

@@ -87,4 +87,13 @@ public class RagService {
                 candidates.size() - relevant.size());
     }
 
+    public Map<String, Object> compare(String question, int topK) {
+        String noRagAnswer = chatClient.prompt().user(question).call().content();
+
+        Map<String, Object> ragResult = ask(question, topK);
+
+        return Map.of("question", question, "withoutRag", Map.of("answer", noRagAnswer, "sources", List.of()),
+                "withRag", Map.of("answer", ragResult.get("answer")), "sources", ragResult.get("sources"), "topK",
+                topK);
+    }
 }
