@@ -37,7 +37,7 @@ public class RagService {
 
         if (relevant.isEmpty()) {
             return Map.of("question", question, "answer", "I don't know based on the provided documents.", "sources",
-                    List.of(), "topK", topK, "filtered", candidates.size());
+                    List.<SourceCard>of(), "topK", topK, "filtered", candidates.size());
         }
 
         String context = relevant.stream()
@@ -65,13 +65,26 @@ public class RagService {
 
         String answer = chatClient.prompt().user(prompt).call().content();
 
-        List<Map<String, Object>> sources = relevant.stream()
-                .map(d -> Map.<String, Object>of("page", d.getMetadata().getOrDefault("page_number", "?"), "distance",
-                        d.getMetadata().getOrDefault("distance", -1), "preview",
-                        d.getText().substring(0, Math.min(150, d.getText().length()))))
+        List<SourceCard> sources = relevant.stream()
+                .map(d -> {
+                    Object page = d.getMetadata().getOrDefault("page_number", "?");
+                    Object source = d.getMetadata().getOrDefault("source", "unknown");
+                    Object chunkIdx = d.getMetadata().getOrDefault("chunk_index", "?");
+                    Object totalChunks = d.getMetadata().getOrDefault("total_chunks", "?");
+
+                    Object rawDist = d.getMetadata().get("distance");
+                    double dist = rawDist == null ? -1.0 : ((Number) rawDist).doubleValue();
+
+                    String fullText = d.getText();
+                    String preview = fullText.substring(0, Math.min(200, fullText.length()));
+
+                    return new SourceCard(d.getId(), source.toString(), page, chunkIdx, totalChunks, dist, fullText,
+                            preview, String.format("[%s, page %s]", source, page));
+                })
                 .toList();
 
-        return Map.of("question", question, "answer", answer, "sources", sources, "topK", topK);
+        return Map.of("question", question, "answer", answer, "sources", sources, "topK", topK, "filtered",
+                candidates.size() - relevant.size());
     }
 
 }
