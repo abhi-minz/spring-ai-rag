@@ -45,16 +45,22 @@ public class RagService {
                 .collect(Collectors.joining("\n\n---\n\n"));
 
         String prompt = """
-                You are an assistant answering questions based on the provided context.
-                Answer ONLY using the context below. If the context does not contain
-                the answer, respond with: "I don't know based on the provided documents."
+                You are a research assistant answering questions strictly from the provided context.
+
+                Rules:
+                1. Answer ONLY using the context below. Do not use outside knowledge.
+                2. Every factual claim MUST include a citation in the format [page N].
+                3. If the context does not contain the answer, respond exactly with:
+                   "I don't know based on the provided documents."
+                4. If different pages give conflicting information, point out the conflict.
+                5. Be concise but complete. Prefer bullet points for multi-part answers.
 
                 Context:
                 %s
 
                 Question: %s
 
-                Answer:
+                Answer (with [page N] citations):
                 """.formatted(context, question);
 
         String answer = chatClient.prompt().user(prompt).call().content();
