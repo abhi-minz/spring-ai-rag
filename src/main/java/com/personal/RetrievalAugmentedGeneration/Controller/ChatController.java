@@ -1,6 +1,5 @@
 package com.personal.RetrievalAugmentedGeneration.Controller;
 
-import com.openai.core.MultipartField;
 import com.personal.RetrievalAugmentedGeneration.Service.ChatService;
 import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
 import com.personal.RetrievalAugmentedGeneration.Service.DocumentIngestionService;
@@ -94,6 +93,15 @@ public class ChatController {
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public Map<String, Object> upload(@RequestParam("file") MultipartFile file) throws Exception {
         return documentIngestionService.ingestPdf(file);
+    }
+
+    @GetMapping("/read-pdf")
+    public Map<String, Object> readPdf(@RequestParam String path) {
+        List<Document> docs = pdfReaderService.readPdf(path);
+        return Map.of("path", path, "pages", docs.size(), "preview",
+                docs.stream().map(d -> Map.of("page", d.getMetadata().getOrDefault("page_number", "?"), "chars",
+                        d.getText().length(), "text", d.getText().substring(0, Math.min(200, d.getText().length()))))
+                        .toList());
     }
 
 }
