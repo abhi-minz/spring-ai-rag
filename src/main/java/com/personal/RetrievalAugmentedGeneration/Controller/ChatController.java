@@ -2,6 +2,7 @@ package com.personal.RetrievalAugmentedGeneration.Controller;
 
 import com.personal.RetrievalAugmentedGeneration.Service.ChatService;
 import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
+import com.personal.RetrievalAugmentedGeneration.Service.PdfReaderService;
 import com.personal.RetrievalAugmentedGeneration.Service.VectorStoreService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +24,14 @@ public class ChatController {
     private final ChatService chatService;
     private final VectorStoreService vectorStoreService;
     private final ChunkingService chunkingService;
+    private final PdfReaderService pdfReaderService;
 
     public ChatController(ChatService chatService, VectorStoreService vectorStoreService,
-            ChunkingService chunkingService) {
+            ChunkingService chunkingService, PdfReaderService pdfReaderService) {
         this.chatService = chatService;
         this.vectorStoreService = vectorStoreService;
         this.chunkingService = chunkingService;
+        this.pdfReaderService = pdfReaderService;
     }
 
     @PostMapping("/ask")
@@ -63,6 +66,15 @@ public class ChatController {
         return vectorStoreService.search(q, k).stream()
                 .map(doc -> Map.of("id", doc.getId(), "content", doc.getText(), "metadata", doc.getMetadata()))
                 .toList();
+    }
+
+    @GetMapping("/pdf/preview")
+    public Map<String, Object> previewPdf(@RequestParam String path) throws Exception {
+        List<org.springframework.ai.document.Document> docs = pdfReaderService.readPdf(path);
+        return Map.of(
+                "path", path, "pages", docs.size(), "firstPagePreview",
+                docs.isEmpty() ? "" : docs.get(0).getText().substring(0, Math.min(300, docs.get(0).getText().length())),
+                "firstPageMetaData", docs.isEmpty() ? Map.of() : docs.get(0).getMetadata());
     }
 
 }
