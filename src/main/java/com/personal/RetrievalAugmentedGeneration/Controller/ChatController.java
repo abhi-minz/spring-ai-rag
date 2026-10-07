@@ -3,6 +3,7 @@ package com.personal.RetrievalAugmentedGeneration.Controller;
 import com.personal.RetrievalAugmentedGeneration.Service.ChatService;
 import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
 import com.personal.RetrievalAugmentedGeneration.Service.DocumentIngestionService;
+import com.personal.RetrievalAugmentedGeneration.Service.PdfIngestionService;
 import com.personal.RetrievalAugmentedGeneration.Service.PdfReaderService;
 import com.personal.RetrievalAugmentedGeneration.Service.VectorStoreService;
 
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -28,15 +32,17 @@ public class ChatController {
     private final VectorStoreService vectorStoreService;
     private final ChunkingService chunkingService;
     private final PdfReaderService pdfReaderService;
+    private final PdfIngestionService pdfIngestionService;
 
     public ChatController(ChatService chatService, VectorStoreService vectorStoreService,
             ChunkingService chunkingService, PdfReaderService pdfReaderService,
-            DocumentIngestionService documentIngestionService) {
+            DocumentIngestionService documentIngestionService, PdfIngestionService pdfIngestionService) {
         this.chatService = chatService;
         this.vectorStoreService = vectorStoreService;
         this.chunkingService = chunkingService;
         this.pdfReaderService = pdfReaderService;
         this.documentIngestionService = documentIngestionService;
+        this.pdfIngestionService = pdfIngestionService;
     }
 
     @PostMapping("/ask")
@@ -102,6 +108,20 @@ public class ChatController {
                 docs.stream().map(d -> Map.of("page", d.getMetadata().getOrDefault("page_number", "?"), "chars",
                         d.getText().length(), "text", d.getText().substring(0, Math.min(200, d.getText().length()))))
                         .toList());
+    }
+
+    @PostMapping("/upload-pdf")
+    public Map<String, Object> uploadPdf(@RequestParam("file") MultipartFile file,
+            @RequestParam(value = "source", defaultValue = "uploaded-pdf") String source,
+            @RequestParam(value = "chunkSize", defaultValue = "800") int chunkSize) throws Exception {
+        Path temp = Files.createTempFile("upload-", "-" + file.getOriginalFilename());
+        file.transferTo(temp.toFile());
+
+        try {
+            return pdfIngestionService.ingestPdf(temp.toString(), source, chunkSize);
+        } finally {
+            Files.deleteIfExists(temp);
+        }
     }
 
 }

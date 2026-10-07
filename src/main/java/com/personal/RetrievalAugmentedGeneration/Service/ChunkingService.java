@@ -1,5 +1,6 @@
 package com.personal.RetrievalAugmentedGeneration.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +39,22 @@ public class ChunkingService {
      */
     public List<Document> split(String text, Map<String, Object> metadata) {
         return split(text, metadata, 800, 350, 0);
+    }
+
+    public List<Document> splitWithPageMetadata(List<Document> pages, String source, int chunkSize) {
+        List<Document> result = new ArrayList<>();
+        for (Document page : pages) {
+            Object pageNum = page.getMetadata().get("page_number");
+            List<Document> pageChunks = split(page.getText(),
+                    Map.of("source", source, "page_number", pageNum == null ? "?" : pageNum), chunkSize, 350, 0);
+
+            for (int i = 0; i < pageChunks.size(); i++) {
+                Document c = pageChunks.get(i);
+                c.getMetadata().put("chunk_index", i);
+                c.getMetadata().put("total_chunks", pageChunks.size());
+                result.add(c);
+            }
+        }
+        return result;
     }
 }
