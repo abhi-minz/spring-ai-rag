@@ -1,6 +1,22 @@
 # Spring AI RAG
 
-A Retrieval-Augmented Generation (RAG) chatbot built with Spring Boot, Spring AI, Ollama, and PostgreSQL + pgvector.
+A production-grade Retrieval-Augmented Generation (RAG) chatbot built with Spring Boot, Spring AI, Ollama, PostgreSQL + pgvector, and React.
+
+## Architecture
+React Frontend (:5173)
+↓ HTTP
+Spring Boot Backend (:8080)
+↓
+Groq (chat) + Ollama (embeddings) + PostgreSQL/pgvector
+
+text
+
+## Structure
+
+- `backend/` — Spring Boot + Spring AI + Java 21
+- `frontend/` — React + Vite SPA
+- `docs/` — findings, design notes
+- `data/` — test PDFs, Jupyter notebooks
 
 ## Stack
 
@@ -9,40 +25,81 @@ A Retrieval-Augmented Generation (RAG) chatbot built with Spring Boot, Spring AI
 - **Groq** for chat (OpenAI-compatible)
 - **Ollama** (`nomic-embed-text`) for embeddings
 - **PostgreSQL 16** + **pgvector** for vector storage
+- **React + Vite** for the frontend
+- **Docker** (Week 6) for deployment
 
 ## Features
 
-- `POST /api/ask` — chat with an LLM (no RAG)
-- `POST /api/ingest` — insert a text chunk with metadata
-- `POST /api/ingest-document` — chunk and ingest long text
-- `GET /api/search?q=...&k=3` — semantic search over stored chunks
-- `POST /api/upload-pdf` — upload a PDF and ingest all its chunks
-- `GET /api/read-pdf?path=...` — read a PDF's pages without ingesting
-- `POST /api/ask-doc` — RAG: answer questions grounded in the ingested documents
-- `POST /api/compare` — RAG vs. no-RAG, side-by-side
-- `POST /api/chat-doc` — multi-turn RAG with conversation memory
+### Backend Endpoints
 
-## Demo
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| POST | `/api/ask` | Chat with an LLM (no RAG) |
+| POST | `/api/ingest` | Insert a text chunk with metadata |
+| POST | `/api/ingest-document` | Chunk and ingest long text |
+| GET | `/api/search?q=...&k=3` | Semantic search over stored chunks |
+| POST | `/api/upload-pdf` | Upload a PDF and ingest all its chunks |
+| GET | `/api/read-pdf?path=...` | Read a PDF's pages without ingesting |
+| POST | `/api/ask-doc` | RAG: answer questions grounded in the ingested documents |
+| POST | `/api/compare` | RAG vs. no-RAG, side-by-side |
+| POST | `/api/chat-doc` | Multi-turn RAG with conversation memory |
+
+### Frontend
+
+- Chat interface calling the RAG backend
+- Source cards showing page numbers and distances
+- PDF upload UI
+- Session management for multi-turn conversations
+
+## Quick Start
+
+### Backend
 
 ```bash
-$ curl "http://localhost:8080/api/search?q=deployment%20failure&k=3"
+cd backend
+./mvnw spring-boot:run
+Requires:
+
+Ollama running (ollama serve) with nomic-embed-text pulled
+
+PostgreSQL running with pgvector extension enabled
+
+Environment variables: GROQ_API_KEY, pg_db_password
+
+Frontend
+bash
+cd frontend
+npm install
+npm run dev
+Opens at http://localhost:5173
+
+Demo
+bash
+curl "http://localhost:8080/api/search?q=multi-head%20attention&k=3"
+json
 [
-  {"content": "The service will not start after the last deployment.", "metadata": {"source": "doc-1", "distance": 0.317}},
-  {"content": "Container keeps restarting in a crash loop.", "metadata": {"source": "doc-3", "distance": 0.490}},
-  {"content": "Quarterly revenue grew by 12% in the north region.", "metadata": {"source": "doc-2", "distance": 0.589}}
+  {"content": "Multi-head attention allows the model to jointly attend to information...", "metadata": {"page": 5, "distance": 0.278}},
+  {"content": "Scaled Dot-Product Attention Multi-Head Attention...", "metadata": {"page": 4, "distance": 0.311}},
+  {"content": "Figure 5: Many of the attention heads exhibit behaviour...", "metadata": {"page": 15, "distance": 0.346}}
 ]
+RAG in action
+bash
+curl -X POST http://localhost:8080/api/ask-doc \
+  -H "Content-Type: application/json" \
+  -d '{"question": "How does multi-head attention work?", "topK": 3}'
+Returns an answer with [page N] citations and structured source metadata.
 
-## Docs
+Docs
+Week 2 Findings — Embeddings & Semantic Search
 
-- [Week 2 Findings](docs/WEEK2-FINDINGS.md)
-- [Week 3 Findings](docs/WEEK3-FINDINGS.md)
-- [Week 4 Findings](docs/WEEK4-FINDINGS.md)
+Week 3 Findings — PDF Ingestion
 
-## Roadmap
+Week 4 Findings — Full RAG Loop
 
-- [x] Week 1: Chat endpoint with Groq
-- [x] Week 2: Embeddings, pgvector, semantic search, chunking
-- [x] Week 3: PDF ingestion (chunking real documents)
-- [x] Week 4: Full RAG pipeline (retrieve + generate + memory)
-- [ ] Week 5: Frontend + polish
-- [ ] Week 6: Evaluation + Docker deployment
+Roadmap
+☑ Week 1: Chat endpoint with Groq
+☑ Week 2: Embeddings, pgvector, semantic search, chunking
+☑ Week 3: PDF ingestion (chunking real documents)
+☑ Week 4: Full RAG pipeline (retrieve + generate + memory)
+□ Week 5: React frontend + polish
+□ Week 6: Evaluation + Docker deployment
