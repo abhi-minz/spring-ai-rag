@@ -1,6 +1,7 @@
 package com.personal.RetrievalAugmentedGeneration.Controller;
 
 import com.personal.RetrievalAugmentedGeneration.Service.ChatService;
+import com.personal.RetrievalAugmentedGeneration.Service.ChatWithMemoryService;
 import com.personal.RetrievalAugmentedGeneration.Service.ChunkingService;
 import com.personal.RetrievalAugmentedGeneration.Service.DocumentIngestionService;
 import com.personal.RetrievalAugmentedGeneration.Service.PdfIngestionService;
@@ -34,11 +35,12 @@ public class ChatController {
     private final PdfReaderService pdfReaderService;
     private final PdfIngestionService pdfIngestionService;
     private final RagService ragService;
+    private final ChatWithMemoryService chatWithMemoryService;
 
     public ChatController(ChatService chatService, VectorStoreService vectorStoreService,
             ChunkingService chunkingService, PdfReaderService pdfReaderService,
             DocumentIngestionService documentIngestionService, PdfIngestionService pdfIngestionService,
-            RagService ragService) {
+            RagService ragService, ChatWithMemoryService chatWithMemoryService) {
         this.chatService = chatService;
         this.vectorStoreService = vectorStoreService;
         this.chunkingService = chunkingService;
@@ -46,6 +48,7 @@ public class ChatController {
         this.documentIngestionService = documentIngestionService;
         this.pdfIngestionService = pdfIngestionService;
         this.ragService = ragService;
+        this.chatWithMemoryService = chatWithMemoryService;
     }
 
     @PostMapping("/ask")
@@ -140,6 +143,17 @@ public class ChatController {
         int topK = body.containsKey("topK") ? ((Number) body.get("topK")).intValue() : 3;
 
         return ragService.compare(question, topK);
+    }
+
+    @PostMapping("/chat-doc")
+    public Map<String, Object> chatDoc(@RequestBody Map<String, Object> body) {
+        String sessionId = (String) body.getOrDefault("sessionId", "default");
+        String question = (String) body.get("question");
+        int topK = body.containsKey("topK") ? ((Number) body.get("topK")).intValue() : 3;
+
+        String answer = chatWithMemoryService.ask(sessionId, question, topK);
+
+        return Map.of("sessionId", sessionId, "question", question, "answer", answer, "topK", topK);
     }
 
 }
