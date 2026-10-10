@@ -1,0 +1,32 @@
+.app {
+    height: 100vh;
+    background-color: #bbe9db;
+}
+
+.app-header {
+    height: 20%;
+    background-color: #aeccc6;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.app-chat-area {
+    height: 80%;
+    display: flex;
+    justify-content: center;
+}
+
+.app-doc-area {
+    height: 100%;
+    width: 20vw;
+    padding-left: 2%;
+    background-color: #9ba6a5;
+    box-sizing: border-box;
+}
+
+.app-msg-area {
+    height: 100%;
+    width: 80vw;
+    background-color: #757a79;
+    box-sizing: border-box;
+}

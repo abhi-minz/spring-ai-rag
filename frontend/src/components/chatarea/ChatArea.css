@@ -1,0 +1,46 @@
+.chat-area {
+    height: 100%;
+    width: 100%;
+}
+
+.message-chat-area {
+    height: 80%;
+    width: 100%;
+}
+
+.input-chat-bar {
+    height: 20%;
+    width: 100%;
+}
+
+.bubble.thinking {
+    color: violet;
+    font-style: italic;
+}
+
+.bubble.thinking::after {
+    content: '';
+    animation: dots 1.4s infinite;
+}
+
+@keyframes dots {
+
+    0%,
+    20% {
+        content: '.';
+    }
+
+    40% {
+        content: '..';
+    }
+
+    60%,
+    100% {
+        content: '...';
+    }
+}
+
+.message.assistant .bubble.error {
+    background: turquoise;
+    color: blanchedalmond;
+}

@@ -1,0 +1,33 @@
+.sidebar-main {
+    margin-left: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-settings {
+    display: block;
+}
+
+.documents {
+    height: 10vh;
+    overflow-y: auto;
+}
+
+.sidebar-clear-chat {
+    height: 10%;
+}
+
+.sidebar-clear {
+    width: 100%;
+    height: 100%;
+}
+
+.sidebar-clear button {
+    width: 80%;
+    height: 70%;
+    border-radius: 999px;
+    font-size: x-large;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}

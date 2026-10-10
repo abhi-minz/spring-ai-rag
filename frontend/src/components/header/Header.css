@@ -1,0 +1,18 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-session {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.session{
+    background-color: rgba(137, 43, 226, 0.137);
+    padding: 20px;
+    border-radius: 999px;
+    color: blueviolet;
+}
