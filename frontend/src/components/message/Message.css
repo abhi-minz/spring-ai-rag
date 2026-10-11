@@ -1,6 +1,5 @@
 .message-area {
     height: fit-content;
-    background-color: #979c9b70;
     border-radius: 20px;
     margin-bottom: 20px;
     width: fit-content;
@@ -14,15 +13,23 @@
 }
 
 .message-area.user {
-    width: 100%;
     display: flex;
     justify-content: flex-end;
+    width: 100%;
 }
 
 .bubble {
     font-size: large;
     text-align: justify;
-    margin: 15px;
     width: fit-content;
+    max-width: 80%;
     height: 100%;
+    background-color: #979c9b70;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.bubble-wrap {
+    display: flex;
+    flex-direction: column;
 }

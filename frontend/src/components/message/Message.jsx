@@ -5,11 +5,13 @@ import './Message.css'
 function Message({role, text, error, sources}) {
     return (
         <div className={`message-area ${role}`}>
-            <div className={`bubble ${error ? 'error' : ''}`}>
+            <div className="bubble-wrap">
+                <div className={`bubble ${error ? 'error' : ''}`}>
                     {text}
+                </div>
+                {sources && sources.length > 0 &&
+                    (<SourceList sources={sources} />)}
             </div>
-            {sources && sources.length > 0 &&
-                (<SourceList sources={sources} />)}
         </div>
     );
 }
