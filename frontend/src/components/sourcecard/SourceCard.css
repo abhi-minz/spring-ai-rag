@@ -1,36 +1,42 @@
 .source-card {
-    background: #fff;
+    background: #fafbfc;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 8px 12px;
+    margin-top: 6px;
     font-size: 12px;
-    margin-top: 8px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.source-card:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
 }
 
 .source-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
-.source-label {
-    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+.source-card-label {
+    font-weight: 600;
     color: #3730a3;
-    font-weight: 500;
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
-.source-distance {
+.source-card-distance {
     color: #6b7280;
-    font-size: 11px;
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
-.source-preview {
+.source-card-preview {
     color: #4b5563;
-    font-size: 12px;
     line-height: 1.4;
+    overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
 }
