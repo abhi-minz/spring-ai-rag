@@ -1,3 +1,28 @@
 .message-area {
-    overflow-y: auto;
+    height: fit-content;
+    background-color: #979c9b70;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    width: fit-content;
+    display: flex;
+}
+
+.message-area.assistant {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.message-area.user {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bubble {
+    font-size: large;
+    text-align: justify;
+    margin: 15px;
+    width: fit-content;
+    height: 100%;
 }

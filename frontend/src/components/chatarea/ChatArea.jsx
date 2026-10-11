@@ -19,10 +19,10 @@ function ChatArea({messages, setMessages, sessionId, topK, useRag}) {
         try {
             const data = useRag ? await chatDoc({ sessionId, question: text, topK }) : await askSimple(text);
 
-            setMessages((prev) => [...prev, { role: 'assistant', text: data.answer ?? data.content ?? '(no answer)' },]);
+            setMessages((prev) => [...prev, { role: 'assistant', text: data.answer ?? data.content ?? '(no answer)', sources: data.sources ?? [] },]);
         }
         catch (err) {
-            setMessages((prev) => [...prev, { role: 'assistant', text: `Error: ${err.message}`, error: true, }]);
+            setMessages((prev) => [...prev, { role: 'assistant', text: data.answer ?? data.content ?? '(no answer)', sources: data.sources ?? []}]);
         }
         finally {
             setLoading(false);
@@ -31,18 +31,19 @@ function ChatArea({messages, setMessages, sessionId, topK, useRag}) {
 
     return (
             <div className="chat-area">
-            <div className="message-chat-area">
-                {messages.map((msg, i) => (
-                <Message key={i} role={msg.role} text={msg.text} error={msg.error} />
-                ))}
-                {loading && (
-                    <div className="message assistant">
-                        <div className="bubble thinking">Thinking...</div>
+                <div className="message-chat-area">
+                    {messages.map((msg, i) => (
+                    <Message key={i} role={msg.role} text={msg.text} error={msg.error} sources={msg.sources} />))}
+                    {loading && (
+                        <div className="message assistant">
+                            <div className="bubble thinking">
+                                Thinking...
+                            </div>
+                        </div>
+                    )}
                     </div>
-                )}
-                </div>
-                <div className="input-chat-bar">
-                <InputBar onSend={handleSend} disabled={loading}/>
+                    <div className="input-chat-bar">
+                    <InputBar onSend={handleSend} disabled={loading}/>
                 </div>
             </div>
     );

@@ -151,9 +151,7 @@ public class ChatController {
         String question = (String) body.get("question");
         int topK = body.containsKey("topK") ? ((Number) body.get("topK")).intValue() : 3;
 
-        String answer = chatWithMemoryService.ask(sessionId, question, topK);
-
-        return Map.of("sessionId", sessionId, "question", question, "answer", answer, "topK", topK);
+        return chatWithMemoryService.ask(sessionId, question, topK);
     }
 
 }
