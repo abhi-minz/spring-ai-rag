@@ -18,14 +18,14 @@
 
 .app-doc-area {
     height: 100%;
-    width: 10vw;
+    width: 20vw;
     background-color: #9ba6a5;
     box-sizing: border-box;
 }
 
 .app-msg-area {
     height: 100%;
-    width: 90vw;
+    width: 80vw;
     background-color: rgb(85, 84, 84);
     box-sizing: border-box;
 }

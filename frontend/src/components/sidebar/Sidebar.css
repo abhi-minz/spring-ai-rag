@@ -1,33 +1,68 @@
-.sidebar-main {
-    margin-left: 10px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.sidebar-settings {
+.btn-primary {
     display: block;
-}
-
-.documents {
-    height: 10vh;
-    overflow-y: auto;
-}
-
-.sidebar-clear-chat {
-    height: 10%;
-}
-
-.sidebar-clear {
     width: 100%;
-    height: 100%;
+    padding: 10px 16px;
+    background: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s ease;
 }
 
-.sidebar-clear button {
-    width: 80%;
-    height: 70%;
-    border-radius: 999px;
-    font-size: x-large;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+.btn-primary:hover:not(.disabled) {
+    background: #0052cc;
+}
+
+.btn-primary.disabled {
+    background: #b3ccff;
+    cursor: not-allowed;
+}
+
+.upload-message {
+    margin-top: 8px;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.upload-message.success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.upload-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.doc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.doc-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.doc-name {
+    color: #374151;
+    font-weight: 500;
+}
+
+.doc-meta {
+    font-size: 11px;
+    color: #9ca3af;
 }

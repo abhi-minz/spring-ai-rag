@@ -25,20 +25,6 @@ export async function askDoc({ question, topK = 3 }) {
     return res.json();
 }
 
-export async function uploadPdf(file, source, chunkSize = 800) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('source', source);
-    formData.append('chunkSize', chunkSize);
-
-    const res = await fetch('${API_BASE}/api/upload-pdf', {
-        method: 'POST',
-        body: formData
-    });
-    if (!res.ok) throw new Error(`Upload fail ${res.status}`);
-    return res.json();
-}
-
 export async function askSimple(question) {
     const res = await fetch(`${API_BASE}/api/ask`, {
         method: 'POST',
@@ -48,4 +34,17 @@ export async function askSimple(question) {
     if (!res.ok) throw new Error(`API erro ${res.status}`);
     const text = await res.text();
     return { answer: text };
+}
+
+export async function uploadPdf(file, source, chunkSize = 800) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('source', source);
+    formData.append('chunkSize', chunkSize);
+
+    const res = await fetch(`${API_BASE}/api/upload-pdf`, { method: 'POST', body: formData, });
+
+    if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+    return res.json();
+
 }

@@ -57,4 +57,8 @@ public class VectorStoreService {
                 SearchRequest.builder().query(query).topK(topK).build());
     }
 
+    public void deleteBySource(String source) {
+        vectorStore.delete("source == '" + source + "'");
+    }
+
 }

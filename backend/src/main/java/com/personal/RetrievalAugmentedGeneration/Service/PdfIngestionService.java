@@ -27,6 +27,13 @@ public class PdfIngestionService {
     }
 
     public Map<String, Object> ingestPdf(String pdfPath, String source, int chunkSize) {
+
+        try {
+            vectorStoreService.deleteBySource(source);
+        } catch (Exception e) {
+            // Source doesn't exist yet — fine, continue
+        }
+
         List<Document> pages = pdfReaderService.readPdf(pdfPath);
         List<Document> cleanedPages = new ArrayList<>();
 
