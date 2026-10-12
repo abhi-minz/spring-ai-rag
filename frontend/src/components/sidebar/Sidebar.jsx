@@ -10,7 +10,7 @@ function Sidebar({ topK, setTopK, useRag, setUseRag }) {
 
     async function handleFileChange(e) {
         const file = e.target.files?.[0];
-        if (!file) return;
+      if (!file) return;
 
         e.target.value = '';
 
@@ -22,7 +22,7 @@ function Sidebar({ topK, setTopK, useRag, setUseRag }) {
             const result = await uploadPdf(file, sourceName, 800);
             setDocuments((prev) => [...prev.filter((d) => d.name !== sourceName), { name: sourceName, chunks: result.chunks },]);
 
-            setMessage({ type: 'success', text: `Ingested ${sourceName.pages} paes -> ${result.chunks} chunks`, });
+            setMessage({ type: 'success', text: `Ingested ${result.pages} pages -> ${result.chunks} chunks`, });
         }
         catch (err) {
             setMessage({ type: 'error', text: err.message });

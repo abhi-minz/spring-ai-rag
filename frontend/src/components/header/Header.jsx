@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import './Header.css'
 
-function Header() {
-    const [session] = useState(0)
+function Header({sessionId}) {
     return (
         <div className="header">
             <div className="header-model">
@@ -10,7 +9,7 @@ function Header() {
                 <span>Ask questions about your documents</span>
             </div>
             <div className="header-session">
-                <span>Session: {session}</span>
+                <span>Session: {sessionId}</span>
             </div>
         </div>
     );

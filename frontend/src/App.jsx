@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="app">
       <div className="app-header">
-        <Header />
+        <Header sessionId={sessionId} />
       </div>
       <div className="app-chat-area">
         <div className="app-doc-area">
